@@ -17,6 +17,7 @@ from todoism.models import User, Item
 
 
 def get_item_body():
+    """item的反序列化"""
     data = request.get_json()
     body = data.get('body')
     if body is None or str(body).strip() == '':
