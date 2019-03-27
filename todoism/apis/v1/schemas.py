@@ -11,6 +11,7 @@ from todoism.models import Item
 
 
 def user_schema(user):
+    """user序列化"""
     return {
         'id': user.id,
         'self': url_for('.user', _external=True),
@@ -26,6 +27,7 @@ def user_schema(user):
 
 
 def item_schema(item):
+    """item序列化"""
     return {
         'id': item.id,
         'self': url_for('.item', item_id=item.id, _external=True),
@@ -42,6 +44,7 @@ def item_schema(item):
 
 
 def items_schema(items, current, prev, next, pagination):
+    """多个item序列化"""
     return {
         'self': current,
         'kind': 'ItemCollection',
