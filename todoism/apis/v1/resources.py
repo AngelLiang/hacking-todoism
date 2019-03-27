@@ -25,7 +25,7 @@ def get_item_body():
 
 
 class IndexAPI(MethodView):
-
+    """URL导航API"""
     def get(self):
         return jsonify({
             "api_version": "1.0",
