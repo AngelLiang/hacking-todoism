@@ -45,17 +45,22 @@ def logout():
 
 @auth_bp.route('/register')
 def register():
+
+    # 生成随机用户和密码
     # generate a random account for demo use
     username = fake.user_name()
     # make sure the generated username was not in database
     while User.query.filter_by(username=username).first() is not None:
         username = fake.user_name()
     password = fake.word()
+
+    # 创建用户
     user = User(username=username)
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
 
+    # 创建四个item
     item = Item(body=_('Witness something truly majestic'), author=user)
     item2 = Item(body=_('Help a complete stranger'), author=user)
     item3 = Item(body=_('Drive a motorcycle on the Great Wall of China'), author=user)

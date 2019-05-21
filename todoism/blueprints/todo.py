@@ -28,6 +28,7 @@ def app():
 @todo_bp.route('/items/new', methods=['POST'])
 @login_required
 def new_item():
+    """创建item"""
     data = request.get_json()
     if data is None or data['body'].strip() == '':
         return jsonify(message=_('Invalid item body.')), 400
@@ -40,6 +41,7 @@ def new_item():
 @todo_bp.route('/item/<int:item_id>/edit', methods=['PUT'])
 @login_required
 def edit_item(item_id):
+    """编辑item"""
     item = Item.query.get_or_404(item_id)
     if current_user != item.author:
         return jsonify(message=_('Permission denied.')), 403
@@ -55,6 +57,7 @@ def edit_item(item_id):
 @todo_bp.route('/item/<int:item_id>/toggle', methods=['PATCH'])
 @login_required
 def toggle_item(item_id):
+    """切换item状态"""
     item = Item.query.get_or_404(item_id)
     if current_user != item.author:
         return jsonify(message=_('Permission denied.')), 403
@@ -67,6 +70,7 @@ def toggle_item(item_id):
 @todo_bp.route('/item/<int:item_id>/delete', methods=['DELETE'])
 @login_required
 def delete_item(item_id):
+    """删除单个item"""
     item = Item.query.get_or_404(item_id)
     if current_user != item.author:
         return jsonify(message=_('Permission denied.')), 403
@@ -79,6 +83,7 @@ def delete_item(item_id):
 @todo_bp.route('/item/clear', methods=['DELETE'])
 @login_required
 def clear_items():
+    """清楚所有items"""
     items = Item.query.with_parent(current_user).filter_by(done=True).all()
     for item in items:
         db.session.delete(item)
