@@ -118,6 +118,7 @@ class ItemsAPI(MethodView):
         page = request.args.get('page', 1, type=int)
         per_page = current_app.config['TODOISM_ITEM_PER_PAGE']
         pagination = Item.query.with_parent(g.current_user).paginate(page, per_page)
+        # 获取 items current（URL） prev（URL） next（URL） 等
         items = pagination.items
         current = url_for('.items', page=page, _external=True)
         prev = None
@@ -126,6 +127,7 @@ class ItemsAPI(MethodView):
         next = None
         if pagination.has_next:
             next = url_for('.items', page=page + 1, _external=True)
+        # 生成响应
         return jsonify(items_schema(items, current, prev, next, pagination))
 
     def post(self):
@@ -133,6 +135,7 @@ class ItemsAPI(MethodView):
         item = Item(body=get_item_body(), author=g.current_user)
         db.session.add(item)
         db.session.commit()
+        # 生成响应
         response = jsonify(item_schema(item))
         response.status_code = 201
         response.headers['Location'] = url_for('.item', item_id=item.id, _external=True)
@@ -144,9 +147,12 @@ class ActiveItemsAPI(MethodView):
 
     def get(self):
         """Get current user's active items."""
+        # 取参
         page = request.args.get('page', 1, type=int)
+        # 分页
         pagination = Item.query.with_parent(g.current_user).filter_by(done=False).paginate(
             page, per_page=current_app.config['TODOISM_ITEM_PER_PAGE'])
+        # 获取 items current（URL） prev（URL） next（URL） 等
         items = pagination.items
         current = url_for('.items', page=page, _external=True)
         prev = None
@@ -155,6 +161,7 @@ class ActiveItemsAPI(MethodView):
         next = None
         if pagination.has_next:
             next = url_for('.active_items', page=page + 1, _external=True)
+        # 生成schema并返回
         return jsonify(items_schema(items, current, prev, next, pagination))
 
 
@@ -163,9 +170,12 @@ class CompletedItemsAPI(MethodView):
 
     def get(self):
         """Get current user's completed items."""
+        # 取参
         page = request.args.get('page', 1, type=int)
+        # 分页
         pagination = Item.query.with_parent(g.current_user).filter_by(done=True).paginate(
             page, per_page=current_app.config['TODOISM_ITEM_PER_PAGE'])
+        # 获取 items current（URL） prev（URL） next（URL） 等
         items = pagination.items
         current = url_for('.items', page=page, _external=True)
         prev = None
@@ -174,6 +184,7 @@ class CompletedItemsAPI(MethodView):
         next = None
         if pagination.has_next:
             next = url_for('.completed_items', page=page + 1, _external=True)
+        # 生成schema并返回
         return jsonify(items_schema(items, current, prev, next, pagination))
 
     def delete(self):
